@@ -10,7 +10,7 @@ const PRESETS = [
   { id: 'none',        label: 'None' },
 ] as const;
 
-export function RouteFilterToggle({ value, onChange, routes }: Props) {
+export function RouteFilterToggle({ value, onChange }: Props) {
   return (
     <div style={{ position: 'relative', display: 'flex', gap: 6, alignItems: 'center' }}>
       {/* Segmented presets */}
