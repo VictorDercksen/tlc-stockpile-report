@@ -121,7 +121,7 @@ export function SiteCard({ siteKey, stockpiles, routes }: Props) {
                   <StatRow label="Projected balance" value={projected} />
                 )}
                 {isMine && (s.enrouteToLoad ?? 0) > 0 && (
-                  <StatRow label="Trucks to load" value={s.enrouteToLoad!} />
+                  <StatRow label="To be loaded" value={s.enrouteToLoad!} />
                 )}
               </div>
             </div>

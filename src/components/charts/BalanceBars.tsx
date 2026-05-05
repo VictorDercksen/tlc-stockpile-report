@@ -1,13 +1,17 @@
-import type { Stockpile } from '../../api/types';
+import type { Stockpile, Route } from '../../api/types';
 import { NODE_META } from '../../utils/nodeMetadata';
 import { fmtNum, fmtSigned } from '../../utils/format';
 import { useDashboard } from '../../state/dashboardContext';
 
-type Props = { stockpiles: Stockpile[] };
+type Props = { stockpiles: Stockpile[]; routes: Route[] };
 
-export function BalanceBars({ stockpiles }: Props) {
+export function BalanceBars({ stockpiles, routes }: Props) {
   const { selectedStockpile, selectedRoute, select } = useDashboard();
   const hasSelection = !!(selectedStockpile || selectedRoute);
+
+  const routeStockpiles = selectedRoute
+    ? (() => { const r = routes.find(r => r.id === selectedRoute); return r ? [r.loading.name, r.offloading.name] : []; })()
+    : [];
 
   const max = Math.max(
     ...stockpiles.map(s => Math.max(s.currentBalance + s.receivingEnroute, s.openingBalance, 0)),
@@ -23,7 +27,7 @@ export function BalanceBars({ stockpiles }: Props) {
         const op = Math.max(0, s.openingBalance);
         const projected = cur + (s.receivingEnroute ?? 0);
         const delta = s.currentBalance - s.openingBalance;
-        const isSelected = selectedStockpile === s.name;
+        const isSelected = selectedStockpile === s.name || routeStockpiles.includes(s.name);
         const isDimmed = hasSelection && !isSelected;
         const barColor = isPort ? 'var(--brand)' : 'var(--ink)';
 

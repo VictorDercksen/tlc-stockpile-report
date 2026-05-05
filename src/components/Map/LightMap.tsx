@@ -96,7 +96,7 @@ export function LightMap({ data, height, routeFilter = 'all' }: Props) {
         interactiveLayerIds={['routes-line']}
         onMouseMove={e => {
           const f = e.features?.[0];
-          if (f?.properties) {
+          if (f?.properties && (!hasSelection || f.properties.highlighted)) {
             setTooltip({
               lng: e.lngLat.lng,
               lat: e.lngLat.lat,

@@ -106,7 +106,7 @@ export function DashboardShell({ data }: Props) {
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
               <div className="tlc-card" style={{ padding: 14 }}>
                 <SectionTitle sub="Tons remaining at each location">Stockpile balances</SectionTitle>
-                <BalanceBars stockpiles={data.stockpiles} />
+                <BalanceBars stockpiles={data.stockpiles} routes={data.routes} />
               </div>
               <div className="tlc-card" style={{ padding: 14 }}>
                 <SectionTitle sub={`${activeRoutes} active of ${data.routes.length} corridors`}>Routes</SectionTitle>
