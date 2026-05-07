@@ -63,6 +63,16 @@ export function LightMap({ data, height, routeFilter = 'all' }: Props) {
     return routes.filter(r => r.id === routeFilter);
   }, [data.routes, routeFilter]);
 
+  const visibleNodeNames = useMemo(() => {
+    if (routeFilter === 'all') return null;
+    const names = new Set<string>();
+    filteredRoutes.forEach(r => {
+      names.add(r.loading.name);
+      names.add(r.offloading.name);
+    });
+    return names;
+  }, [filteredRoutes, routeFilter]);
+
   const routeGeoJSON = useMemo(() => ({
     type: 'FeatureCollection' as const,
     features: filteredRoutes.map(r => {
@@ -116,7 +126,7 @@ export function LightMap({ data, height, routeFilter = 'all' }: Props) {
               'line-color': '#ffffff',
               'line-width': 6,
               'line-opacity': hasSelection
-                ? ['case', ['get', 'highlighted'], 0.9, 0.05] as unknown as number
+                ? ['case', ['get', 'highlighted'], 0.9, 0] as unknown as number
                 : 0.9,
             }}
             layout={{ 'line-join': 'round', 'line-cap': 'round' }}
@@ -126,7 +136,7 @@ export function LightMap({ data, height, routeFilter = 'all' }: Props) {
               'line-color': ['case', ['get', 'isPort'], '#00b67a', '#1f2a26'],
               'line-width': 2.4,
               'line-opacity': hasSelection
-                ? ['case', ['get', 'highlighted'], 0.9, 0.1] as unknown as number
+                ? ['case', ['get', 'highlighted'], 0.9, 0] as unknown as number
                 : 0.9,
             }}
             layout={{ 'line-join': 'round', 'line-cap': 'round' }}
@@ -139,6 +149,9 @@ export function LightMap({ data, height, routeFilter = 'all' }: Props) {
           const meta = NODE_META[main.name];
           const isPort = meta?.type === 'port';
           const isSelected = selectedStockpile === main.name;
+          const isHiddenByFilter = visibleNodeNames !== null && !visibleNodeNames.has(main.name);
+          if (isHiddenByFilter) return null;
+
           const isDimmed = hasSelection && !isSelected && !(selectedRoute && (
             data.routes.some(r => r.id === selectedRoute && (r.loading.name === main.name || r.offloading.name === main.name))
           ));
@@ -168,7 +181,7 @@ export function LightMap({ data, height, routeFilter = 'all' }: Props) {
               <div
                 style={{
                   display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3,
-                  cursor: 'pointer', opacity: isDimmed ? 0.3 : 1,
+                  cursor: 'pointer', opacity: isDimmed ? 0 : 1, pointerEvents: isDimmed ? 'none' : undefined,
                   transition: 'opacity 0.2s',
                 }}
                 title={tipLabel}
